@@ -1,0 +1,10 @@
+Flask
+flask_cors
+pymongo
+python-dotenv
+bcrypt
+PyJWT
+youtube-transcript-api
+google-genai
+PyPDF2
+requests
