@@ -122,7 +122,7 @@ export const About = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent mb-6">
-              ShapeShifters
+              Notezy
             </h1>
             <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
               {message || "Transform Your Learning Experience with AI-Powered Study Tools"}
@@ -150,7 +150,7 @@ export const About = () => {
               Our Mission
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              At ShapeShifters, we believe that learning should be accessible, efficient, and engaging. Our AI-powered platform transforms educational content into structured study materials, helping students and professionals achieve their learning goals faster and more effectively.
+              At Notezy, we believe that learning should be accessible, efficient, and engaging. Our AI-powered platform transforms educational content into structured study materials, helping students and professionals achieve their learning goals faster and more effectively.
             </p>
           </div>
           
@@ -195,7 +195,7 @@ export const About = () => {
             Powerful Features
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Discover the tools that make ShapeShifters the ultimate study companion for modern learners.
+            Discover the tools that make Notezy the ultimate study companion for modern learners.
           </p>
         </div>
         
@@ -224,7 +224,7 @@ export const About = () => {
               Trusted by Thousands
             </h2>
             <p className="text-blue-100 text-lg">
-              Join the growing community of learners who trust ShapeShifters
+              Join the growing community of learners who trust Notezy
             </p>
           </div>
           
@@ -246,7 +246,7 @@ export const About = () => {
             Our Team
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-            Meet the passionate individuals behind ShapeShifters, dedicated to revolutionizing education through technology.
+            Meet the passionate individuals behind Notezy, dedicated to revolutionizing education through technology.
           </p>
         </div>
         
@@ -277,7 +277,7 @@ export const About = () => {
             Ready to Transform Your Learning?
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of students and professionals who are already using ShapeShifters to accelerate their learning journey.
+            Join thousands of students and professionals who are already using Notezy to accelerate their learning journey.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
