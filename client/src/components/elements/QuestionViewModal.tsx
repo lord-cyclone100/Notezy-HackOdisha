@@ -1,7 +1,20 @@
 import ReactMarkdown from 'react-markdown';
 import { useState, useEffect } from 'react';
 
-export const QuestionViewModal = ({ questions, isOpen, onClose }) => {
+type Question = {
+  title: string;
+  content: string;
+  note_title: string;
+  created_at: string;
+};
+
+type QuestionViewModalProps = {
+  questions: Question;
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export const QuestionViewModal = ({ questions, isOpen, onClose }: QuestionViewModalProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -22,7 +35,7 @@ export const QuestionViewModal = ({ questions, isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -34,13 +47,13 @@ export const QuestionViewModal = ({ questions, isOpen, onClose }) => {
     });
   };
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       onClose();
     }
@@ -123,10 +136,12 @@ export const QuestionViewModal = ({ questions, isOpen, onClose }) => {
                     {children}
                   </blockquote>
                 ),
-                code: ({inline, children}) => 
-                  inline ? 
+                code: ({ children, ...props }: any) => {
+                  const isInline = !props.className;
+                  return isInline ? 
                     <code className="bg-gray-100 dark:bg-gray-800 text-pink-600 dark:text-pink-400 px-1 py-0.5 rounded text-sm font-mono">{children}</code> :
-                    <code className="block bg-gray-900 dark:bg-black text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto">{children}</code>,
+                    <code className="block bg-gray-900 dark:bg-black text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto">{children}</code>
+                },
                 strong: ({children}) => <strong className="font-bold text-gray-900 dark:text-gray-100">{children}</strong>,
                 em: ({children}) => <em className="italic text-gray-700 dark:text-gray-400">{children}</em>,
               }}

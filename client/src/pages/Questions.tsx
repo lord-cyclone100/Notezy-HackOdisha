@@ -4,9 +4,18 @@ import axios from 'axios';
 import { BACKEND_URL } from '../config/config';
 import { QuestionCard } from '../components/elements/QuestionCard';
 
+// Define interfaces
+interface QuestionSet {
+  _id: string;
+  title?: string;
+  questions: string[];
+  created_at: string;
+  // Add other properties as needed
+}
+
 export const Questions = () => {
-  const { user, isAuthenticated } = useAuth();
-  const [questions, setQuestions] = useState([]);
+  const { isAuthenticated } = useAuth();
+  const [questions, setQuestions] = useState<QuestionSet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -35,7 +44,7 @@ export const Questions = () => {
     }
   };
 
-  const handleDeleteQuestions = async (questionsId) => {
+  const handleDeleteQuestions = async (questionsId: string) => {
     if (!window.confirm('Are you sure you want to delete these questions?')) {
       return;
     }
@@ -136,7 +145,13 @@ export const Questions = () => {
             {questions.map((questionSet) => (
               <QuestionCard 
                 key={questionSet._id} 
-                questions={questionSet}
+                questions={{
+                  _id: questionSet._id,
+                  title: questionSet.title || '',
+                  note_title: questionSet.title || '',
+                  content: (questionSet.questions || []).join('\n'),
+                  created_at: questionSet.created_at
+                }}
                 onDelete={handleDeleteQuestions}
               />
             ))}

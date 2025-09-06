@@ -1,11 +1,42 @@
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
-export const TestViewModal = ({ test, isOpen, onClose }) => {
-  const [selectedAnswers, setSelectedAnswers] = useState({});
+// Define interfaces
+interface Question {
+  id: number;
+  question: string;
+  options: {
+    letter: string;
+    text: string;
+  }[];
+}
+
+interface Test {
+  title: string;
+  test_content: string;
+  created_at: string;
+  source_notes?: string[];
+}
+
+interface TestViewModalProps {
+  test: Test;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+interface SelectedAnswers {
+  [questionId: number]: string;
+}
+
+interface AnswerKey {
+  [questionId: number]: string;
+}
+
+export const TestViewModal = ({ test, isOpen, onClose }: TestViewModalProps) => {
+  const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({});
   const [showResults, setShowResults] = useState(false);
-  const [questions, setQuestions] = useState([]);
-  const [answerKey, setAnswerKey] = useState({});
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [answerKey, setAnswerKey] = useState<AnswerKey>({});
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -14,12 +45,12 @@ export const TestViewModal = ({ test, isOpen, onClose }) => {
     }
   }, [test]);
 
-  const parseQuestions = (content) => {
+  const parseQuestions = (content: string) => {
     // Parse the markdown content to extract questions, options, and answer key
     const lines = content.split('\n');
-    const parsedQuestions = [];
-    const parsedAnswerKey = {};
-    let currentQuestion = null;
+    const parsedQuestions: Question[] = [];
+    const parsedAnswerKey: AnswerKey = {};
+    let currentQuestion: Question | null = null;
     let questionNumber = 0;
     let inAnswerKeySection = false;
 
@@ -76,7 +107,7 @@ export const TestViewModal = ({ test, isOpen, onClose }) => {
     setAnswerKey(parsedAnswerKey);
   };
 
-  const handleAnswerSelect = (questionId, answer) => {
+  const handleAnswerSelect = (questionId: number, answer: string) => {
     setSelectedAnswers(prev => ({
       ...prev,
       [questionId]: answer
@@ -86,7 +117,6 @@ export const TestViewModal = ({ test, isOpen, onClose }) => {
   const handleCheckAnswers = () => {
     // Calculate score
     let correctAnswers = 0;
-    const totalQuestions = questions.length;
     
     questions.forEach(question => {
       const userAnswer = selectedAnswers[question.id];
@@ -122,7 +152,7 @@ export const TestViewModal = ({ test, isOpen, onClose }) => {
   };
 
   useEffect(() => {
-    const handleEscape = (e) => {
+    const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
@@ -139,7 +169,7 @@ export const TestViewModal = ({ test, isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -148,53 +178,53 @@ export const TestViewModal = ({ test, isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const markdownComponents = {
-    h1: ({ children }) => (
-      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-4">
+    h1: ({ children, ...props }: any) => (
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-4" {...props}>
         {children}
       </h1>
     ),
-    h2: ({ children }) => (
-      <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3 mt-6">
+    h2: ({ children, ...props }: any) => (
+      <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3 mt-6" {...props}>
         {children}
       </h2>
     ),
-    h3: ({ children }) => (
-      <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2 mt-4">
+    h3: ({ children, ...props }: any) => (
+      <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2 mt-4" {...props}>
         {children}
       </h3>
     ),
-    p: ({ children }) => (
-      <p className="text-slate-700 dark:text-slate-300 mb-3 leading-relaxed">
+    p: ({ children, ...props }: any) => (
+      <p className="text-slate-700 dark:text-slate-300 mb-3 leading-relaxed" {...props}>
         {children}
       </p>
     ),
-    ul: ({ children }) => (
-      <ul className="list-disc list-inside text-slate-700 dark:text-slate-300 mb-4 space-y-1 ml-4">
+    ul: ({ children, ...props }: any) => (
+      <ul className="list-disc list-inside text-slate-700 dark:text-slate-300 mb-4 space-y-1 ml-4" {...props}>
         {children}
       </ul>
     ),
-    ol: ({ children }) => (
-      <ol className="list-decimal list-inside text-slate-700 dark:text-slate-300 mb-4 space-y-2 ml-4">
+    ol: ({ children, ...props }: any) => (
+      <ol className="list-decimal list-inside text-slate-700 dark:text-slate-300 mb-4 space-y-2 ml-4" {...props}>
         {children}
       </ol>
     ),
-    li: ({ children }) => (
-      <li className="mb-1">
+    li: ({ children, ...props }: any) => (
+      <li className="mb-1" {...props}>
         {children}
       </li>
     ),
-    strong: ({ children }) => (
-      <strong className="font-semibold text-slate-800 dark:text-slate-200">
+    strong: ({ children, ...props }: any) => (
+      <strong className="font-semibold text-slate-800 dark:text-slate-200" {...props}>
         {children}
       </strong>
     ),
-    code: ({ children }) => (
-      <code className="bg-slate-100 dark:bg-slate-700 px-1 py-0.5 rounded text-sm font-mono">
+    code: ({ children, ...props }: any) => (
+      <code className="bg-slate-100 dark:bg-slate-700 px-1 py-0.5 rounded text-sm font-mono" {...props}>
         {children}
       </code>
     ),
-    pre: ({ children }) => (
-      <pre className="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto mb-4">
+    pre: ({ children, ...props }: any) => (
+      <pre className="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg overflow-x-auto mb-4" {...props}>
         {children}
       </pre>
     ),

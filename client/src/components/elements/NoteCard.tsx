@@ -1,11 +1,25 @@
-import ReactMarkdown from 'react-markdown';
 import { useState } from 'react';
 import { NoteViewModal } from './NoteViewModal';
 
-export const NoteCard = ({ note, onDelete, showCheckbox = false, isSelected = false, onSelectionChange }) => {
+type Note = {
+  _id: string;
+  title: string;
+  content: string;
+  created_at: string;
+};
+
+type NoteCardProps = {
+  note: Note;
+  onDelete?: (id: string) => void;
+  showCheckbox?: boolean;
+  isSelected?: boolean;
+  onSelectionChange?: (id: string, checked: boolean) => void;
+};
+
+export const NoteCard = ({ note, onDelete, showCheckbox = false, isSelected = false, onSelectionChange }: NoteCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -16,7 +30,7 @@ export const NoteCard = ({ note, onDelete, showCheckbox = false, isSelected = fa
     });
   };
 
-  const getPreview = (content) => {
+  const getPreview = (content: string) => {
     // Remove markdown formatting and get first 150 characters
     const plainText = content.replace(/[#*`\[\]()]/g, '').trim();
     return plainText.length > 150 ? plainText.substring(0, 150) + '...' : plainText;
@@ -30,7 +44,7 @@ export const NoteCard = ({ note, onDelete, showCheckbox = false, isSelected = fa
     setIsModalOpen(false);
   };
 
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e: { stopPropagation: () => void; target: { checked: boolean; }; }) => {
     e.stopPropagation();
     if (onSelectionChange) {
       onSelectionChange(note._id, e.target.checked);

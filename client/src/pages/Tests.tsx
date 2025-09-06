@@ -4,9 +4,18 @@ import { BACKEND_URL } from "../config/config"
 import { useAuth } from '../context/AuthContext';
 import { TestCard } from '../components/elements/TestCard';
 
+type Test = {
+  _id: string;
+  title: string;
+  test_content: string;
+  created_at: string;
+  // add other properties as needed
+  [key: string]: any;
+};
+
 export const Tests = () => {
   const { user, isAuthenticated } = useAuth();
-  const [tests, setTests] = useState([]);
+  const [tests, setTests] = useState<Test[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -34,7 +43,7 @@ export const Tests = () => {
     }
   };
 
-  const handleDeleteTest = async (testId) => {
+  const handleDeleteTest = async (testId: any) => {
     if (!window.confirm('Are you sure you want to delete this test?')) {
       return;
     }

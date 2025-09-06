@@ -1,5 +1,17 @@
-export const RecentActivity = ({ activities }) => {
-  const getActivityIcon = (type) => {
+// Define interfaces
+interface Activity {
+  type: 'note' | 'test' | 'question';
+  title: string;
+  description: string;
+  timestamp: string;
+}
+
+interface RecentActivityProps {
+  activities: Activity[];
+}
+
+export const RecentActivity = ({ activities }: RecentActivityProps) => {
+  const getActivityIcon = (type: Activity['type']) => {
     switch (type) {
       case 'note':
         return (
@@ -28,7 +40,7 @@ export const RecentActivity = ({ activities }) => {
     }
   };
 
-  const getActivityColor = (type) => {
+  const getActivityColor = (type: Activity['type']) => {
     switch (type) {
       case 'note':
         return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30';
@@ -41,9 +53,9 @@ export const RecentActivity = ({ activities }) => {
     }
   };
 
-  const formatTimeAgo = (date) => {
+  const formatTimeAgo = (date: string) => {
     const now = new Date();
-    const diff = now - new Date(date);
+    const diff = now.getTime() - new Date(date).getTime();
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);

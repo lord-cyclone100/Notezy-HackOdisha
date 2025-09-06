@@ -1,16 +1,32 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import axios from "axios"
 import { BACKEND_URL } from "../config/config"
 import { useAuth } from '../context/AuthContext';
 import ReactMarkdown from 'react-markdown'
 import { PdfUploadModal } from '../components/elements/PdfUploadModal';
 
+// Define interfaces
+interface YoutubeData {
+  yturl: string;
+}
+
+interface ApiError {
+  response?: {
+    status: number;
+    data: {
+      is_educational?: boolean;
+      message: string;
+      title: string;
+    };
+  };
+}
+
 export const Learn = () => {
   const { user, isAuthenticated } = useAuth();
   // const [message, setMessage] = useState('')
   const [displayMessage, setDisplayMessage] = useState('Notes appear here')
   const [displayTitle, setDisplayTitle] = useState('')
-  const [youtubeData, setYoutubeData] = useState({yturl:''})
+  const [youtubeData, setYoutubeData] = useState<YoutubeData>({yturl:''})
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
@@ -20,18 +36,18 @@ export const Learn = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
   const [showPdfModal, setShowPdfModal] = useState(false)
-  const [uploadedPdf, setUploadedPdf] = useState(null)
+  const [uploadedPdf, setUploadedPdf] = useState<File | null>(null)
   // useEffect(()=>{
   //   axios.get(`${BACKEND_URL}about`)
   //   .then(res => setMessage(res.data.message))
   // },[])
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setYoutubeData({ ...youtubeData, [e.target.name]: e.target.value });
     // console.log(youtubeData);
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setSaveSuccess(false); // Reset save success state
@@ -52,10 +68,11 @@ export const Learn = () => {
     } catch (error) {
       console.log(error);
       // Check if it's a non-educational content error
-      if (error.response && error.response.status === 400 && error.response.data.is_educational === false) {
-        setDisplayMessage(error.response.data.message);
-        setDisplayTitle(error.response.data.title);
-        setOriginalContent(error.response.data.message);
+      const apiError = error as ApiError;
+      if (apiError.response && apiError.response.status === 400 && apiError.response.data.is_educational === false) {
+        setDisplayMessage(apiError.response.data.message);
+        setDisplayTitle(apiError.response.data.title);
+        setOriginalContent(apiError.response.data.message);
       } else {
         setDisplayMessage('Error occurred while processing the video. Please try again.');
         setDisplayTitle(''); // Clear title on error
@@ -70,7 +87,7 @@ export const Learn = () => {
     setEditedContent(displayMessage);
   };
 
-  const handleEditChange = (e) => {
+  const handleEditChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = e.target.value;
     setEditedContent(newContent);
     setHasUnsavedChanges(newContent !== originalContent);
@@ -129,7 +146,7 @@ export const Learn = () => {
     }
   };
 
-  const handlePdfUpload = async (file) => {
+  const handlePdfUpload = async (file: File) => {
     setUploadedPdf(file);
     setYoutubeData({yturl: ''}); // Clear any YouTube URL when processing PDF
     
@@ -157,10 +174,11 @@ export const Learn = () => {
     } catch (error) {
       console.error('Error processing PDF:', error);
       // Check if it's a non-educational content error
-      if (error.response && error.response.status === 400 && error.response.data.is_educational === false) {
-        setDisplayMessage(error.response.data.message);
-        setDisplayTitle(error.response.data.title);
-        setOriginalContent(error.response.data.message);
+      const apiError = error as ApiError;
+      if (apiError.response && apiError.response.status === 400 && apiError.response.data.is_educational === false) {
+        setDisplayMessage(apiError.response.data.message);
+        setDisplayTitle(apiError.response.data.title);
+        setOriginalContent(apiError.response.data.message);
       } else {
         setDisplayMessage('Error occurred while processing the PDF file. Please try again.');
         setDisplayTitle(''); // Clear title on error
@@ -203,10 +221,11 @@ export const Learn = () => {
       } catch (error) {
         console.log(error);
         // Check if it's a non-educational content error
-        if (error.response && error.response.status === 400 && error.response.data.is_educational === false) {
-          setDisplayMessage(error.response.data.message);
-          setDisplayTitle(error.response.data.title);
-          setOriginalContent(error.response.data.message);
+        const apiError = error as ApiError;
+        if (apiError.response && apiError.response.status === 400 && apiError.response.data.is_educational === false) {
+          setDisplayMessage(apiError.response.data.message);
+          setDisplayTitle(apiError.response.data.title);
+          setOriginalContent(apiError.response.data.message);
         } else {
           setDisplayMessage('Error occurred while processing the video. Please try again.');
           setDisplayTitle('');

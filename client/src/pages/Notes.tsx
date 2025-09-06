@@ -4,12 +4,22 @@ import { BACKEND_URL } from "../config/config"
 import { useAuth } from '../context/AuthContext';
 import { NoteCard } from '../components/elements/NoteCard';
 
+// Define interfaces
+interface Note {
+  _id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  updated_at?: string;
+  // Add other properties as needed
+}
+
 export const Notes = () => {
   const { user, isAuthenticated } = useAuth();
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedNotes, setSelectedNotes] = useState(new Set());
+  const [selectedNotes, setSelectedNotes] = useState<Set<string>>(new Set());
   const [isTestGenerating, setIsTestGenerating] = useState(false);
   const [showTestMode, setShowTestMode] = useState(false);
 
@@ -37,7 +47,7 @@ export const Notes = () => {
     }
   };
 
-  const handleDeleteNote = async (noteId) => {
+  const handleDeleteNote = async (noteId: string) => {
     if (!window.confirm('Are you sure you want to delete this note?')) {
       return;
     }
@@ -64,7 +74,7 @@ export const Notes = () => {
     }
   };
 
-  const handleNoteSelection = (noteId, isSelected) => {
+  const handleNoteSelection = (noteId: string, isSelected: boolean) => {
     setSelectedNotes(prev => {
       const newSet = new Set(prev);
       if (isSelected) {
@@ -93,7 +103,7 @@ export const Notes = () => {
     try {
       setIsTestGenerating(true);
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${BACKEND_URL}tests`, {
+      await axios.post(`${BACKEND_URL}tests`, {
         note_ids: Array.from(selectedNotes)
       }, {
         headers: {
@@ -270,7 +280,7 @@ export const Notes = () => {
                     <NoteCard 
                       key={note._id} 
                       note={note} 
-                      onDelete={showTestMode ? null : handleDeleteNote}
+                      onDelete={showTestMode ? undefined : handleDeleteNote}
                       showCheckbox={showTestMode}
                       isSelected={selectedNotes.has(note._id)}
                       onSelectionChange={handleNoteSelection}

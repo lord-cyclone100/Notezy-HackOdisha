@@ -1,10 +1,23 @@
 import { useState } from 'react';
 import { QuestionViewModal } from './QuestionViewModal';
 
-export const QuestionCard = ({ questions, onDelete }) => {
+type Question = {
+  _id: string;
+  title: string;
+  note_title: string;
+  content: string;
+  created_at: string;
+};
+
+type QuestionCardProps = {
+  questions: Question;
+  onDelete: (id: string) => void;
+};
+
+export const QuestionCard = ({ questions, onDelete }: QuestionCardProps) => {
   const [showModal, setShowModal] = useState(false);
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -13,7 +26,7 @@ export const QuestionCard = ({ questions, onDelete }) => {
     });
   };
 
-  const getPreview = (content) => {
+  const getPreview = (content: string) => {
     // Remove markdown formatting for preview
     const plainText = content.replace(/[#*`\[\]]/g, '');
     return plainText.length > 120 ? plainText.substring(0, 120) + '...' : plainText;

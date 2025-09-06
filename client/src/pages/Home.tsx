@@ -5,6 +5,31 @@ import { useAuth } from "../context/AuthContext"
 import { StatCard } from "../components/elements/StatCard"
 import { RecentActivity } from "../components/elements/RecentActivity"
 
+// Define interfaces at the top
+interface Activity {
+  type: 'note' | 'test' | 'question';
+  title: string;
+  description: string;
+  timestamp: string;
+}
+
+interface Note {
+  title: string;
+  created_at: string;
+  _id?: string;
+}
+
+interface Test {
+  title: string;
+  created_at: string;
+  _id?: string;
+}
+
+interface Question {
+  created_at: string;
+  _id?: string;
+}
+
 export const Home = () => {
   const [message, setMessage] = useState('')
   const { isAuthenticated, user } = useAuth();
@@ -14,7 +39,7 @@ export const Home = () => {
     questions: 0,
     timeSpent: 0
   });
-  const [recentActivities, setRecentActivities] = useState([]);
+  const [recentActivities, setRecentActivities] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -23,7 +48,8 @@ export const Home = () => {
     if (!isAuthenticated) return;
 
     const interval = setInterval(() => {
-      const currentTime = parseInt(localStorage.getItem('dailyTimeSpent')) || 0;
+      const storedTime = localStorage.getItem('dailyTimeSpent');
+      const currentTime = parseInt(storedTime || '0', 10);
       const newTime = currentTime + 1; // Add 1 minute every minute
       localStorage.setItem('dailyTimeSpent', newTime.toString());
       
@@ -47,7 +73,7 @@ export const Home = () => {
   }, []);
 
   // Helper function to format time in hours and minutes
-  const formatTime = (minutes) => {
+  const formatTime = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     
@@ -61,7 +87,7 @@ export const Home = () => {
   };
 
   // Helper function to format current time
-  const formatCurrentTime = (date) => {
+  const formatCurrentTime = (date: Date): string => {
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
@@ -71,7 +97,7 @@ export const Home = () => {
   };
 
   // Helper function to format current date
-  const formatCurrentDate = (date) => {
+  const formatCurrentDate = (date: Date): string => {
     return date.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
@@ -114,7 +140,8 @@ export const Home = () => {
       const questions = questionsRes.data || []; // Questions endpoint returns array directly
 
       // Get or initialize time spent from localStorage
-      let totalMinutes = parseInt(localStorage.getItem('dailyTimeSpent')) || 0;
+      const storedTime = localStorage.getItem('dailyTimeSpent');
+      let totalMinutes = parseInt(storedTime || '0', 10);
       
       // If it's a new day, reset the time
       const today = new Date().toDateString();
@@ -134,40 +161,43 @@ export const Home = () => {
       });
 
       // Generate recent activities from the data
-      const activities = [];
+      const activities: Activity[] = [];
       
       // Add recent notes
-      notes.slice(0, 3).forEach(note => {
-        activities.push({
+      notes.slice(0, 3).forEach((note: Note) => {
+        const activity: Activity = {
           type: 'note',
           title: `Created note: ${note.title}`,
           description: 'New note saved to your collection',
           timestamp: note.created_at
-        });
+        };
+        activities.push(activity);
       });
 
       // Add recent tests
-      tests.slice(0, 2).forEach(test => {
-        activities.push({
+      tests.slice(0, 2).forEach((test: Test) => {
+        const activity: Activity = {
           type: 'test',
           title: `Generated test: ${test.title}`,
           description: 'New test created from your notes',
           timestamp: test.created_at
-        });
+        };
+        activities.push(activity);
       });
 
       // Add recent questions
-      questions.slice(0, 2).forEach(question => {
-        activities.push({
+      questions.slice(0, 2).forEach((question: Question) => {
+        const activity: Activity = {
           type: 'question',
           title: `Generated questions for a note`,
           description: 'New study questions created',
           timestamp: question.created_at
-        });
+        };
+        activities.push(activity);
       });
 
       // Sort by timestamp and take the most recent 5
-      activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
       setRecentActivities(activities.slice(0, 5));
 
     } catch (error) {
@@ -184,7 +214,7 @@ export const Home = () => {
           <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-4">{message}</h1>
           <div className="bg-blue-50/90 dark:bg-blue-900/30 backdrop-blur-sm border border-blue-200 dark:border-blue-800 rounded-lg p-6 mt-8">
             <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-2">
-              Welcome to ShapeShifters
+              Welcome to Notezy
             </h2>
             <p className="text-blue-600 dark:text-blue-400 mb-4">
               Please login or register to get started
@@ -243,8 +273,8 @@ export const Home = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 }
-                trend={dashboardData.notes > 0 ? "up" : null}
-                trendValue={dashboardData.notes > 0 ? `+${Math.floor(dashboardData.notes * 0.2)} this week` : null}
+                trend={dashboardData.notes > 0 ? "up" : undefined}
+                trendValue={dashboardData.notes > 0 ? `+${Math.floor(dashboardData.notes * 0.2)} this week` : undefined}
               />
 
               <StatCard
@@ -256,8 +286,8 @@ export const Home = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                   </svg>
                 }
-                trend={dashboardData.tests > 0 ? "up" : null}
-                trendValue={dashboardData.tests > 0 ? `+${Math.floor(dashboardData.tests * 0.3)} this week` : null}
+                trend={dashboardData.tests > 0 ? "up" : undefined}
+                trendValue={dashboardData.tests > 0 ? `+${Math.floor(dashboardData.tests * 0.3)} this week` : undefined}
               />
 
               <StatCard
@@ -269,8 +299,8 @@ export const Home = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 }
-                trend={dashboardData.questions > 0 ? "up" : null}
-                trendValue={dashboardData.questions > 0 ? `+${Math.floor(dashboardData.questions * 0.4)} this week` : null}
+                trend={dashboardData.questions > 0 ? "up" : undefined}
+                trendValue={dashboardData.questions > 0 ? `+${Math.floor(dashboardData.questions * 0.4)} this week` : undefined}
               />
 
               <StatCard

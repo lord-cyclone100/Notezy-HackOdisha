@@ -1,11 +1,18 @@
 import { useState, useRef } from 'react';
 
-export const PdfUploadModal = ({ isOpen, onClose, onFileSelect }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const fileInputRef = useRef(null);
+// Define interfaces
+interface PdfUploadModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onFileSelect: (file: File) => void;
+}
 
-  const handleFileSelect = (file) => {
+export const PdfUploadModal = ({ isOpen, onClose, onFileSelect }: PdfUploadModalProps) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (file: File | null) => {
     if (file && file.type === 'application/pdf') {
       setSelectedFile(file);
     } else {
@@ -13,24 +20,24 @@ export const PdfUploadModal = ({ isOpen, onClose, onFileSelect }) => {
     }
   };
 
-  const handleFileInputChange = (e) => {
-    const file = e.target.files[0];
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
     handleFileSelect(file);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragOver(false);
     const file = e.dataTransfer.files[0];
     handleFileSelect(file);
   };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragOver(true);
   };
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragOver(false);
   };
@@ -48,7 +55,7 @@ export const PdfUploadModal = ({ isOpen, onClose, onFileSelect }) => {
     onClose();
   };
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       handleCancel();
     }

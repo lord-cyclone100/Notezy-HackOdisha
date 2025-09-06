@@ -3,7 +3,21 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BACKEND_URL } from '../../config/config';
 
-export const NoteViewModal = ({ note, isOpen, onClose }) => {
+type Note = {
+  _id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  updated_at?: string;
+};
+
+type NoteViewModalProps = {
+  note: Note;
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export const NoteViewModal = ({ note, isOpen, onClose }: NoteViewModalProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -26,7 +40,7 @@ export const NoteViewModal = ({ note, isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -38,13 +52,13 @@ export const NoteViewModal = ({ note, isOpen, onClose }) => {
     });
   };
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = (e: { target: any; currentTarget: any; }) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: { key: string; }) => {
     if (e.key === 'Escape') {
       onClose();
     }
@@ -156,10 +170,12 @@ export const NoteViewModal = ({ note, isOpen, onClose }) => {
                     {children}
                   </blockquote>
                 ),
-                code: ({inline, children}) => 
-                  inline ? 
-                    <code className="bg-gray-100 dark:bg-gray-800 text-pink-600 dark:text-pink-400 px-1 py-0.5 rounded text-sm font-mono">{children}</code> :
-                    <code className="block bg-gray-900 dark:bg-black text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto">{children}</code>,
+                code: (props) => {
+                  const {inline, className, children, ...rest} = props as any;
+                  return inline
+                    ? <code className={`bg-gray-100 dark:bg-gray-800 text-pink-600 dark:text-pink-400 px-1 py-0.5 rounded text-sm font-mono ${className ?? ''}`} {...rest}>{children}</code>
+                    : <code className={`block bg-gray-900 dark:bg-black text-gray-100 p-4 rounded-lg text-sm font-mono overflow-x-auto ${className ?? ''}`} {...rest}>{children}</code>;
+                },
                 strong: ({children}) => <strong className="font-bold text-gray-900 dark:text-gray-100">{children}</strong>,
                 em: ({children}) => <em className="italic text-gray-700 dark:text-gray-400">{children}</em>,
               }}
