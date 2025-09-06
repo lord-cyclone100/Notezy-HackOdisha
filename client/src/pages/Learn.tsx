@@ -229,9 +229,11 @@ export const Learn = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="p-6">
-        <h1>Notes</h1>
-        <p>Welcome, {user?.name}!</p>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-slate-800 dark:text-slate-200 mb-2">Welcome back, {user?.name}</h1>
+        <p className="text-lg text-slate-600 dark:text-slate-400">
+          What do you want to learn today?
+        </p>
       </div>
       
       {/* Enhanced Input Section */}
