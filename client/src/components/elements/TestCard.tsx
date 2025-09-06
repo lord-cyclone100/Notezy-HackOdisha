@@ -2,10 +2,31 @@ import ReactMarkdown from 'react-markdown';
 import { useState } from 'react';
 import { TestViewModal } from './TestViewModal';
 
-export const TestCard = ({ test, onDelete }) => {
+type TestType = {
+  _id: string;
+  title: string;
+  test_content: string;
+  source_notes?: string[];
+  created_at: string;
+};
+
+type TestCardProps = {
+  test: TestType;
+  onDelete?: (id: string) => void;
+};
+
+export const TestCard = ({ test, onDelete }: TestCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const formatDate = (dateString) => {
+  interface FormatDateOptions {
+    year: 'numeric';
+    month: 'long';
+    day: 'numeric';
+    hour: '2-digit';
+    minute: '2-digit';
+  }
+
+  const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -13,12 +34,16 @@ export const TestCard = ({ test, onDelete }) => {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    });
+    } as FormatDateOptions);
   };
 
-  const getQuestionCount = (content) => {
+  interface GetQuestionCountProps {
+    content: string;
+  }
+
+  const getQuestionCount = (content: GetQuestionCountProps['content']): number | string => {
     // Count the number of questions by looking for numbered questions
-    const questionMatches = content.match(/^\d+\./gm);
+    const questionMatches: RegExpMatchArray | null = content.match(/^\d+\./gm);
     return questionMatches ? questionMatches.length : 'Multiple';
   };
 

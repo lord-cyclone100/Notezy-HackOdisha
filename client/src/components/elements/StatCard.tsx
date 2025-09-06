@@ -1,4 +1,13 @@
-export const StatCard = ({ title, value, icon, trend, trendValue, color = "blue" }) => {
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  trend?: 'up' | 'down';
+  trendValue?: string | number;
+  color?: 'blue' | 'green' | 'purple' | 'orange';
+}
+
+export const StatCard = ({ title, value, icon, trend, trendValue, color = "blue" }: StatCardProps) => {
   const colorClasses = {
     blue: {
       bg: "bg-blue-50 dark:bg-blue-900/20",
