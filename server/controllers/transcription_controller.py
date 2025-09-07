@@ -6,10 +6,27 @@ def generate_transcription():
     try:
         data = request.get_json()
         you = data.get('yturl')
+        
+        if not you:
+            return jsonify({"error": "YouTube URL is required"}), 400
 
-        ts = yt.get_transcription(you)
+        # Get transcript from YouTube
+        try:
+            ts = yt.get_transcription(you)
+        except Exception as transcript_error:
+            return jsonify({
+                "error": f"Failed to fetch transcript: {str(transcript_error)}",
+                "message": "Unable to fetch transcript from this YouTube video. This could be due to: 1) The video doesn't have captions/subtitles, 2) The video is private or restricted, 3) Invalid YouTube URL format, or 4) The video may not exist."
+            }), 400
 
-        result = genai.generate_summary(ts)
+        # Generate summary using AI
+        try:
+            result = genai.generate_summary(ts)
+        except Exception as ai_error:
+            return jsonify({
+                "error": f"Failed to generate summary: {str(ai_error)}",
+                "message": "Successfully fetched transcript but failed to generate summary. Please try again."
+            }), 500
 
         # Check if content is educational
         if not result.get('is_educational', True):
@@ -25,4 +42,7 @@ def generate_transcription():
             'is_educational': True
         })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": str(e),
+            "message": "An unexpected error occurred while processing the video."
+        }), 500

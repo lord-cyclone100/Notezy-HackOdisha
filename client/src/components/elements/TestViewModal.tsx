@@ -54,29 +54,98 @@ export const TestViewModal = ({ test, isOpen, onClose }: TestViewModalProps) => 
     let questionNumber = 0;
     let inAnswerKeySection = false;
 
+    // First pass: find answer key section and parse it
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       
       // Check if we're entering the answer key section
-      if (line.toLowerCase().includes('answer key') || line.toLowerCase().includes('answers:')) {
+      if (line.toLowerCase().includes('answer key') || 
+          line.toLowerCase().includes('answers:') || 
+          line.toLowerCase().includes('correct answers') ||
+          line.toLowerCase().includes('answer:')) {
         inAnswerKeySection = true;
         continue;
       }
       
       // Parse answer key if we're in that section
       if (inAnswerKeySection && line) {
-        // Look for patterns like "1. A", "2. B", "1: A", "2: B", etc.
-        const answerMatch = line.match(/(\d+)[\.\:\)]\s*([A-D])/);
-        if (answerMatch) {
-          const questionNum = parseInt(answerMatch[1]);
-          const answer = answerMatch[2];
+        // Handle comma-separated format like "1. A, 2. B, 3. C, 4. D, 5. A"
+        const answerMatches = line.matchAll(/(\d+)[\.\:\)]\s*([A-D])/g);
+        for (const match of answerMatches) {
+          const questionNum = parseInt(match[1]);
+          const answer = match[2];
           parsedAnswerKey[questionNum] = answer;
         }
-        continue;
+        
+        // Also try to match individual answer patterns on separate lines
+        const singleAnswerMatch = line.match(/^(\d+)[\.\:\)]\s*([A-D])\s*$/);
+        if (singleAnswerMatch) {
+          const questionNum = parseInt(singleAnswerMatch[1]);
+          const answer = singleAnswerMatch[2];
+          parsedAnswerKey[questionNum] = answer;
+        }
+      }
+    }
+
+    // If no answer key was found in a dedicated section, look for it anywhere
+    if (Object.keys(parsedAnswerKey).length === 0) {
+      // Strategy 1: Look for lines with multiple answer patterns
+      for (const line of lines) {
+        const answerMatches = Array.from(line.matchAll(/(\d+)[\.\:\)]\s*([A-D])/g));
+        if (answerMatches.length >= 3) { // If we find 3+ answers in one line, it's likely the answer key
+          for (const match of answerMatches) {
+            const questionNum = parseInt(match[1]);
+            const answer = match[2];
+            parsedAnswerKey[questionNum] = answer;
+          }
+          break;
+        }
+      }
+    }
+
+    // Strategy 2: If still no answer key, look for any line that looks like "1. A" type pattern at the end
+    if (Object.keys(parsedAnswerKey).length === 0) {
+      // Look for answer patterns in the last 20% of the content
+      const lastSection = lines.slice(-Math.ceil(lines.length * 0.2));
+      for (const line of lastSection) {
+        const singleAnswerMatch = line.match(/^(\d+)[\.\:\)]\s*([A-D])\s*$/);
+        if (singleAnswerMatch) {
+          const questionNum = parseInt(singleAnswerMatch[1]);
+          const answer = singleAnswerMatch[2];
+          parsedAnswerKey[questionNum] = answer;
+        }
+      }
+    }
+
+    // Strategy 3: Emergency fallback - look for any pattern anywhere in content
+    if (Object.keys(parsedAnswerKey).length === 0) {
+      for (const line of lines) {
+        // Very loose pattern matching
+        const emergencyMatches = Array.from(line.matchAll(/(?:^|\s)(\d+)[\.\:\)]\s*([A-D])(?:\s|,|$)/g));
+        for (const match of emergencyMatches) {
+          const questionNum = parseInt(match[1]);
+          const answer = match[2];
+          if (questionNum <= parsedQuestions.length) { // Only accept reasonable question numbers
+            parsedAnswerKey[questionNum] = answer;
+          }
+        }
+      }
+    }
+
+    // Second pass: parse questions and options
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      // Skip answer key section
+      if (line.toLowerCase().includes('answer key') || 
+          line.toLowerCase().includes('answers:') || 
+          line.toLowerCase().includes('correct answers') ||
+          line.toLowerCase().includes('answer:')) {
+        break; // Stop parsing questions when we hit the answer key
       }
       
       // Check if it's a question (starts with number and period)
-      if (/^\d+\./.test(line) && !inAnswerKeySection) {
+      if (/^\d+\./.test(line)) {
         if (currentQuestion) {
           parsedQuestions.push(currentQuestion);
         }
@@ -88,7 +157,7 @@ export const TestViewModal = ({ test, isOpen, onClose }: TestViewModalProps) => 
         };
       }
       // Check if it's an option (A, B, C, D)
-      else if (/^[A-D][\.\)]/.test(line) && currentQuestion && !inAnswerKeySection) {
+      else if (/^[A-D][\.\)]/.test(line) && currentQuestion) {
         const optionLetter = line.charAt(0);
         const optionText = line.replace(/^[A-D][\.\)]\s*/, '');
         currentQuestion.options.push({
@@ -121,7 +190,12 @@ export const TestViewModal = ({ test, isOpen, onClose }: TestViewModalProps) => 
     questions.forEach(question => {
       const userAnswer = selectedAnswers[question.id];
       const correctAnswer = answerKey[question.id];
-      if (userAnswer === correctAnswer) {
+      
+      // Only count as correct if:
+      // 1. User has actually selected an answer (userAnswer is not undefined)
+      // 2. The answer matches the correct answer
+      // 3. The correct answer exists in the answer key
+      if (userAnswer && correctAnswer && userAnswer === correctAnswer) {
         correctAnswers++;
       }
     });
@@ -364,26 +438,32 @@ export const TestViewModal = ({ test, isOpen, onClose }: TestViewModalProps) => 
                     ))}
                   </div>
                   
-                  {showResults && selectedAnswers[question.id] && (
+                  {showResults && (
                     <div className={`mt-4 p-3 rounded-lg border ${
-                      selectedAnswers[question.id] === answerKey[question.id]
+                      selectedAnswers[question.id] && selectedAnswers[question.id] === answerKey[question.id]
                         ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
                         : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                     }`}>
                       <div className="flex items-center justify-between">
                         <span className={`text-sm font-medium ${
-                          selectedAnswers[question.id] === answerKey[question.id]
+                          selectedAnswers[question.id] && selectedAnswers[question.id] === answerKey[question.id]
                             ? 'text-green-800 dark:text-green-300'
                             : 'text-red-800 dark:text-red-300'
                         }`}>
-                          Your answer: {selectedAnswers[question.id]}
-                          {selectedAnswers[question.id] === answerKey[question.id] ? (
-                            <span className="ml-2">✓ Correct</span>
+                          {selectedAnswers[question.id] ? (
+                            <>
+                              Your answer: {selectedAnswers[question.id]}
+                              {selectedAnswers[question.id] === answerKey[question.id] ? (
+                                <span className="ml-2">✓ Correct</span>
+                              ) : (
+                                <span className="ml-2">✗ Incorrect</span>
+                              )}
+                            </>
                           ) : (
-                            <span className="ml-2">✗ Incorrect</span>
+                            <span className="ml-2">✗ Not answered</span>
                           )}
                         </span>
-                        {selectedAnswers[question.id] !== answerKey[question.id] && (
+                        {(!selectedAnswers[question.id] || selectedAnswers[question.id] !== answerKey[question.id]) && (
                           <span className="text-sm font-medium text-green-800 dark:text-green-300">
                             Correct: {answerKey[question.id]}
                           </span>

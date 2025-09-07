@@ -18,6 +18,10 @@ export const QuestionViewModal = ({ questions, isOpen, onClose }: QuestionViewMo
   const [isVisible, setIsVisible] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
+  // Debug log to see what questions data we have
+  console.log('QuestionViewModal received data:', questions);
+  console.log('Question content:', questions?.content);
+
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);

@@ -17,6 +17,9 @@ type QuestionCardProps = {
 export const QuestionCard = ({ questions, onDelete }: QuestionCardProps) => {
   const [showModal, setShowModal] = useState(false);
 
+  // Debug log to see what data we're receiving
+  console.log('QuestionCard received data:', questions);
+
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {

@@ -16,7 +16,8 @@ interface ApiError {
     data: {
       is_educational?: boolean;
       message: string;
-      title: string;
+      title?: string;
+      error?: string;
     };
   };
 }
@@ -71,8 +72,12 @@ export const Learn = () => {
       const apiError = error as ApiError;
       if (apiError.response && apiError.response.status === 400 && apiError.response.data.is_educational === false) {
         setDisplayMessage(apiError.response.data.message);
-        setDisplayTitle(apiError.response.data.title);
+        setDisplayTitle(apiError.response.data.title || 'Non-Educational Content');
         setOriginalContent(apiError.response.data.message);
+      } else if (apiError.response && apiError.response.data && apiError.response.data.message) {
+        // Show the detailed error message from backend
+        setDisplayMessage(apiError.response.data.message);
+        setDisplayTitle('Error Processing Video');
       } else {
         setDisplayMessage('Error occurred while processing the video. Please try again.');
         setDisplayTitle(''); // Clear title on error
@@ -177,7 +182,7 @@ export const Learn = () => {
       const apiError = error as ApiError;
       if (apiError.response && apiError.response.status === 400 && apiError.response.data.is_educational === false) {
         setDisplayMessage(apiError.response.data.message);
-        setDisplayTitle(apiError.response.data.title);
+        setDisplayTitle(apiError.response.data.title || 'Non-Educational Content');
         setOriginalContent(apiError.response.data.message);
       } else {
         setDisplayMessage('Error occurred while processing the PDF file. Please try again.');
@@ -224,8 +229,12 @@ export const Learn = () => {
         const apiError = error as ApiError;
         if (apiError.response && apiError.response.status === 400 && apiError.response.data.is_educational === false) {
           setDisplayMessage(apiError.response.data.message);
-          setDisplayTitle(apiError.response.data.title);
+          setDisplayTitle(apiError.response.data.title || 'Non-Educational Content');
           setOriginalContent(apiError.response.data.message);
+        } else if (apiError.response && apiError.response.data && apiError.response.data.message) {
+          // Show the detailed error message from backend
+          setDisplayMessage(apiError.response.data.message);
+          setDisplayTitle('Error Processing Video');
         } else {
           setDisplayMessage('Error occurred while processing the video. Please try again.');
           setDisplayTitle('');

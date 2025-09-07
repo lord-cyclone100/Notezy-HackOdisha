@@ -8,7 +8,8 @@ import { QuestionCard } from '../components/elements/QuestionCard';
 interface QuestionSet {
   _id: string;
   title?: string;
-  questions: string[];
+  content: string;  // Changed from questions: string[] to content: string
+  note_title?: string;
   created_at: string;
   // Add other properties as needed
 }
@@ -34,6 +35,7 @@ export const Questions = () => {
           'Authorization': `Bearer ${token}`
         }
       });
+      console.log('Questions API Response:', response.data); // Debug log
       setQuestions(response.data);
       setError('');
     } catch (error) {
@@ -147,9 +149,9 @@ export const Questions = () => {
                 key={questionSet._id} 
                 questions={{
                   _id: questionSet._id,
-                  title: questionSet.title || '',
-                  note_title: questionSet.title || '',
-                  content: (questionSet.questions || []).join('\n'),
+                  title: questionSet.title || 'Untitled Questions',
+                  note_title: questionSet.note_title || 'Unknown Note',
+                  content: questionSet.content || '',
                   created_at: questionSet.created_at
                 }}
                 onDelete={handleDeleteQuestions}

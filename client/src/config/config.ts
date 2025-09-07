@@ -1,1 +1,1 @@
-export const BACKEND_URL: string = "https://notezy-backend-02.onrender.com/";
+export const BACKEND_URL: string = "http://localhost:5000/";
