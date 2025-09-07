@@ -45,6 +45,24 @@ Notezy is a comprehensive full-stack educational platform that leverages AI to r
 - Recent activity monitoring
 - Performance insights and metrics
 
+## 📸 Application Screenshots
+
+Get a visual preview of Notezy's intuitive interface and powerful features:
+
+| Feature | Screenshot |
+|---------|------------|
+| **Dashboard Overview** | <img src="./client/public/images/app/Screenshot 2025-09-07 174326.png" width="400" alt="Dashboard"> |
+| **Learning Interface** | <img src="./client/public/images/app/Screenshot 2025-09-07 175605.png" width="400" alt="Learning Interface"> |
+| **Notes Management** | <img src="./client/public/images/app/Screenshot 2025-09-07 175633.png" width="400" alt="Notes Management"> |
+| **Questions Section** | <img src="./client/public/images/app/Screenshot 2025-09-07 175646.png" width="400" alt="Questions Section"> |
+| **Test Interface** | <img src="./client/public/images/app/Screenshot 2025-09-07 175658.png" width="400" alt="Test Interface"> |
+
+## 🎬 Live Demo
+
+Experience Notezy in action and explore all features:
+
+🔗 **[Try Live Demo](https://drive.google.com/file/d/1iszyKKrtFWx5RibehUZ5lPfb909L-mkU/view?usp=sharinghttps://drive.google.com/file/d/1iszyKKrtFWx5RibehUZ5lPfb909L-mkU/view?usp=sharing)
+
 ## 🏗️ Technology Stack
 
 ### Frontend
