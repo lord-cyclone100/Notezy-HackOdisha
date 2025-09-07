@@ -48,27 +48,26 @@ Notezy is a comprehensive full-stack educational platform that leverages AI to r
 ## 🏗️ Technology Stack
 
 ### Frontend
-- **React 19.1.1** - Modern UI library with latest features
-- **TypeScript** - Type-safe development
-- **Vite** - Fast build tool and development server
-- **TailwindCSS 4.1.13** - Utility-first CSS framework
-- **React Router 6.31.0** - Client-side routing
-- **Axios 1.7.9** - HTTP client for API calls
-- **React Markdown 9.0.2** - Markdown rendering
+| Technology | Version | Description |
+|------------|---------|-------------|
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="25" height="25"> **React** | 19.1.1 | Modern UI library with latest features |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" width="25" height="25"> **TypeScript** | Latest | Type-safe development |
+| <img src="https://vitejs.dev/logo.svg" width="25" height="25"> **Vite** | Latest | Fast build tool and development server |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg" width="25" height="25"> **TailwindCSS** | 4.1.13 | Utility-first CSS framework |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" width="25" height="25"> **React Router** | 6.31.0 | Client-side routing |
+| <img src="https://axios-http.com/assets/logo.svg" width="25" height="25"> **Axios** | 1.7.9 | HTTP client for API calls |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg" width="25" height="25"> **React Markdown** | 9.0.2 | Markdown rendering |
 
 ### Backend
-- **Flask 3.1.2** - Python web framework
-- **MongoDB** - NoSQL database for data storage
-- **Google Gemini AI 1.33.0** - Advanced AI for content generation
-- **YouTube Transcript API 1.2.2** - Video transcription
-- **PyPDF2 3.0.1** - PDF processing
-- **JWT Authentication** - Secure user sessions
-- **CORS Support** - Cross-origin resource sharing
-
-### Development Tools
-- **ESLint** - Code linting and quality
-- **TypeScript Compiler** - Type checking
-- **Modern ES6+** - Latest JavaScript features
+| Technology | Version | Description |
+|------------|---------|-------------|
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" width="25" height="25"> **Flask** | 3.1.2 | Python web framework |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" width="25" height="25"> **MongoDB** | Latest | NoSQL database for data storage |
+| <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" width="25" height="25"> **Google Gemini AI** | 1.33.0 | Advanced AI for content generation |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/youtube/youtube-original.svg" width="25" height="25"> **YouTube Transcript API** | 1.2.2 | Video transcription |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="25" height="25"> **PyPDF2** | 3.0.1 | PDF processing |
+| <img src="https://jwt.io/img/pic_logo.svg" width="25" height="25"> **JWT Authentication** | Latest | Secure user sessions |
+| <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="25" height="25"> **CORS Support** | Latest | Cross-origin resource sharing |
 
 ## 🚀 Quick Start
 
@@ -293,8 +292,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- **Lead Developer**: [Your Name] - Full-stack development and AI integration
-- **UI/UX Designer**: [Team Member] - User interface and experience design
+| Name | Role | GitHub | LinkedIn |
+|------|------|---------|----------|
+| <img src="https://avatars.githubusercontent.com/u/121711381?s=400&u=0b55d95cbd4a9a684150391fa2f6a1dafbcc9249&v=4" width="50" height="50" style="border-radius: 50%;"> <br> **Sangneel Deb** | Full Stack Developer | [lord-cyclone100](https://github.com/lord-cyclone100) | [sangneel-deb](https://www.linkedin.com/in/sangneel-deb/) |
+| <img src="https://avatars.githubusercontent.com/u/146841766?v=4" width="50" height="50" style="border-radius: 50%;"> <br> **Sudipta Mandal** | AI/ML Engineer | [imsudiptaa](https://github.com/imsudiptaa) | [imsudiptaa](https://www.linkedin.com/in/imsudiptaa/) |
 
 ## 🙏 Acknowledgments
 
@@ -303,15 +304,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **React Community** for excellent documentation
 - **Flask Community** for robust backend framework
 
-## 📞 Support
 
-For support and questions:
-- **Email**: support@notezy.com
-- **GitHub Issues**: [Create an Issue](https://github.com/your-username/notezy-hackodhisha/issues)
-- **Documentation**: [Wiki](https://github.com/your-username/notezy-hackodhisha/wiki)
 
 ---
 
-**Made with ❤️ for HackOdisha 2024**
+**Made with ❤️ by Team ShapeShifters**
 
 Transform your learning experience with AI-powered education tools!
